@@ -1,0 +1,263 @@
+// ==========================================================================
+// layout/_hero.scss
+// Animated CSS starfield + Home hero (CSS Grid with template areas).
+// ==========================================================================
+@use 'sass:map';
+@use '../abstracts' as *;
+
+// ---- Starfield --------------------------------------------------------------
+// Each layer is a 1-3px dot whose box-shadow list (from star-field()) draws
+// hundreds of stars. Its ::after copy sits $star-area below, so drifting
+// the layer up by $star-area loops seamlessly.
+$star-area: 2400;
+$star-layers: (
+  1: (count: 650, size: 1px, speed: 160s, opacity: 0.55),
+  2: (count: 220, size: 2px, speed: 220s, opacity: 0.75),
+  3: (count: 80, size: 3px, speed: 300s, opacity: 0.9),
+);
+
+@keyframes star-drift {
+  to {
+    transform: translateY($star-area * -1px);
+  }
+}
+
+.starfield {
+  position: absolute;
+  inset: 0;
+  z-index: z(starfield);
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--star);
+  -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
+  mask-image: linear-gradient(to bottom, #000 65%, transparent);
+
+  &__layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    background: transparent;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: $star-area * 1px;
+      left: 0;
+      width: inherit;
+      height: inherit;
+      border-radius: inherit;
+      box-shadow: inherit;
+    }
+  }
+
+  // FEATURE: @each over a nested map + interpolated modifier selectors.
+  @each $index, $layer in $star-layers {
+    $size: map.get($layer, size);
+
+    &__layer--#{$index} {
+      width: $size;
+      height: $size;
+      opacity: map.get($layer, opacity);
+      box-shadow: star-field(map.get($layer, count), $star-area);
+      animation: star-drift map.get($layer, speed) linear infinite;
+    }
+  }
+
+  &__layer--3 {
+    animation:
+      star-drift map.get(map.get($star-layers, 3), speed) linear infinite,
+      twinkle 4s ease-in-out infinite;
+  }
+}
+
+// ---- Hero -------------------------------------------------------------------
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: min(calc(100svh - var(--header-height)), #{rem(860px)});
+  padding-block: spacing(8) spacing(18);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(600px 400px at 75% 40%, var(--nebula-1), transparent 70%),
+      radial-gradient(500px 360px at 15% 80%, var(--nebula-2), transparent 70%);
+  }
+
+  // CSS GRID LAYOUT (template areas): copy + visual; stacks on mobile.
+  &__inner {
+    position: relative;
+    z-index: z(base);
+    display: grid;
+    grid-template-areas:
+      'copy'
+      'visual';
+    gap: spacing(6);
+    align-items: center;
+    @include container;
+
+    @include breakpoint(lg) {
+      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-areas: 'copy visual';
+      gap: spacing(4);
+    }
+  }
+
+  &__copy {
+    grid-area: copy;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: spacing(3);
+
+    > * {
+      @include motion-ok {
+        animation: fade-up $duration-slow $ease-out both;
+        @include stagger(5, 0.1s, 0.1s);
+      }
+    }
+  }
+
+  // Orbitron runs wide, so the hero title gets a smaller fluid range.
+  &__title {
+    font-size: fluid(34px, 52px);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: spacing(1.5);
+  }
+
+  &__meta {
+    @extend %list-reset;
+    display: flex;
+    flex-wrap: wrap;
+    gap: spacing(1) spacing(3);
+    font-size: rem(14px);
+    color: var(--text-muted);
+
+    li {
+      display: inline-flex;
+      align-items: center;
+      gap: spacing(1);
+    }
+
+    .icon {
+      color: var(--accent);
+    }
+  }
+
+  &__visual {
+    grid-area: visual;
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    max-width: rem(520px);
+    aspect-ratio: 1;
+    margin-inline: auto;
+  }
+}
+
+// Orbit rings around the hero planet; each carries a body that rides along.
+.orbit {
+  position: absolute;
+  inset: 8%;
+  border: 1px dashed var(--border-strong);
+  border-radius: 50%;
+  animation: spin 40s linear infinite;
+
+  &--outer {
+    inset: -2%;
+    border-style: solid;
+    border-color: var(--border);
+    animation-duration: 75s;
+    animation-direction: reverse;
+  }
+
+  &__body {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: rem(12px);
+    height: rem(12px);
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 16px 2px var(--accent);
+    translate: -50% -50%;
+
+    &--moon {
+      width: rem(28px);
+      height: rem(28px);
+      background: radial-gradient(circle at 32% 30%, #f4f4f8, #a6a6b4 55%, #45455a);
+      box-shadow: 0 0 24px alpha($color-white, 0.25);
+    }
+  }
+}
+
+// Floating glass info chips over the hero visual.
+.hero-chip {
+  position: absolute;
+  z-index: z(raised);
+  display: flex;
+  align-items: center;
+  gap: spacing(1.5);
+  padding: spacing(1.25) spacing(2);
+  border-radius: radius(md);
+  box-shadow: var(--shadow);
+  font-size: rem(13px);
+  line-height: 1.35;
+  @include glass-effect($strength: strong);
+
+  @include motion-ok {
+    animation: float 7s ease-in-out infinite;
+  }
+
+  strong {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: rem(14px);
+  }
+
+  span {
+    color: var(--text-muted);
+  }
+
+  &--top {
+    top: 6%;
+    left: 0;
+  }
+
+  &--bottom {
+    right: 0;
+    bottom: 8%;
+    animation-delay: -3.5s;
+  }
+
+  &__icon {
+    @include flex-center;
+    width: rem(36px);
+    height: rem(36px);
+    border-radius: radius(sm);
+    background: color-mix(in srgb, var(--accent-2) 18%, transparent);
+    color: var(--accent-2);
+  }
+}
+
+.pulse-dot {
+  width: rem(10px);
+  height: rem(10px);
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: currentColor;
+  color: var(--success);
+  animation: pulse 1.8s ease-out infinite;
+}

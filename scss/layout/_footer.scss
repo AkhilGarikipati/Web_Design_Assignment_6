@@ -1,0 +1,108 @@
+// ==========================================================================
+// layout/_footer.scss
+// FLEXBOX LAYOUT: wrapping brand + link columns, and a bottom bar.
+// ==========================================================================
+@use '../abstracts' as *;
+
+.site-footer {
+  position: relative;
+  padding-block: spacing(8) spacing(4);
+  border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, transparent, var(--surface-subtle));
+
+  &__inner {
+    @include container;
+  }
+
+  &__top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: spacing(6) spacing(4);
+  }
+
+  &__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: spacing(2);
+    flex: 1 1 rem(280px);
+    max-width: rem(380px);
+
+    p {
+      font-size: rem(15px);
+      color: var(--text-muted);
+    }
+  }
+
+  &__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: spacing(4) spacing(8);
+  }
+
+  &__heading {
+    @extend %eyebrow;
+    margin-bottom: spacing(2);
+    color: var(--heading);
+  }
+
+  &__list {
+    @extend %list-reset;
+    display: flex;
+    flex-direction: column;
+    gap: spacing(1.25);
+  }
+
+  &__link {
+    font-size: rem(15px);
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  &__bottom {
+    margin-top: spacing(6);
+    padding-top: spacing(3);
+    border-top: 1px solid var(--border);
+    font-size: rem(14px);
+    color: var(--text-muted);
+    @include flex-between($gap: spacing(2), $wrap: true);
+  }
+
+  &__top-link {
+    display: inline-flex;
+    align-items: center;
+    gap: spacing(0.75);
+    font-weight: weight(semibold);
+  }
+}
+
+.social {
+  @extend %list-reset;
+  display: flex;
+  gap: spacing(1);
+
+  &__link {
+    width: rem(42px);
+    height: rem(42px);
+    border-radius: 50%;
+    color: var(--text-muted);
+    @include flex-center;
+    @include glass-effect($blur: 8px);
+    transition:
+      color $duration-fast ease,
+      transform $duration-fast $ease-out,
+      box-shadow $duration-base ease;
+
+    &:hover {
+      @extend %glow;
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    @include focus-ring;
+  }
+}

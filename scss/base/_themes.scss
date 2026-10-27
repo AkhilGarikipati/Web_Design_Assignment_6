@@ -1,0 +1,101 @@
+// ==========================================================================
+// base/_themes.scss
+// FEATURE: CSS custom properties alongside Sass variables. Sass variables
+//          and functions build the values at compile time; custom properties
+//          carry them at runtime so [data-theme] can switch themes live.
+// ==========================================================================
+@use 'sass:map';
+@use 'sass:meta';
+@use '../abstracts' as *;
+
+$themes: (
+  dark: (
+    bg: $color-void,
+    bg-elevated: $color-midnight,
+    nebula-1: alpha($color-violet, 0.22),
+    nebula-2: alpha($color-cyan, 0.12),
+    nebula-3: alpha($color-magenta, 0.1),
+    surface: alpha($color-white, 0.045),
+    surface-subtle: alpha($color-white, 0.025),
+    surface-strong: alpha($color-white, 0.085),
+    surface-solid: tint($color-midnight, 4%),
+    border: alpha($color-white, 0.1),
+    border-strong: alpha($color-white, 0.22),
+    text: #dfe3ff,
+    text-muted: #a3a9d4,
+    heading: $color-white,
+    accent: $color-cyan,
+    accent-2: $color-violet,
+    accent-3: $color-magenta,
+    on-accent: $color-void,
+    glow: alpha($color-cyan, 0.4),
+    glow-2: alpha(glow-tone($color-violet, 15%, -8deg), 0.4),
+    star: $color-white,
+    header-bg: alpha($color-void, 0.62),
+    shadow: (0 24px 48px -24px rgba(0, 0, 0, 0.85)),
+    success: $color-mint,
+    info: $color-cyan,
+    warning: $color-amber,
+    legacy: tint($color-violet, 25%),
+  ),
+  light: (
+    bg: $color-mist,
+    bg-elevated: $color-white,
+    nebula-1: alpha($color-violet, 0.16),
+    nebula-2: alpha($color-cyan, 0.18),
+    nebula-3: alpha($color-magenta, 0.08),
+    surface: alpha($color-white, 0.72),
+    surface-subtle: alpha($color-white, 0.5),
+    surface-strong: alpha($color-white, 0.92),
+    surface-solid: $color-white,
+    border: alpha($color-ink, 0.1),
+    border-strong: alpha($color-ink, 0.2),
+    text: #2a2d52,
+    text-muted: #555b87,
+    heading: $color-ink,
+    accent: #006b99,
+    accent-2: shade($color-violet, 30%),
+    accent-3: shade($color-magenta, 35%),
+    on-accent: $color-white,
+    glow: alpha(#006b99, 0.22),
+    glow-2: alpha(shade($color-violet, 30%), 0.25),
+    star: alpha(shade($color-violet, 30%), 0.55),
+    header-bg: alpha($color-mist, 0.75),
+    shadow: (0 24px 48px -28px alpha($color-ink, 0.28)),
+    success: #0a7a52,
+    info: #006b99,
+    warning: #8f5300,
+    legacy: #6a3fd6,
+  ),
+);
+
+// FEATURE: Mixin + @each + interpolation in custom property names.
+// (bg: #05060f) → --bg: #05060f;
+@mixin theme-tokens($tokens) {
+  @each $name, $value in $tokens {
+    --#{$name}: #{$value};
+  }
+}
+
+:root {
+  // Static tokens exposed from Sass variables.
+  --font-display: #{meta.inspect($font-display)};
+  --font-heading: #{meta.inspect($font-heading)};
+  --font-body: #{meta.inspect($font-body)};
+  --font-mono: #{meta.inspect($font-mono)};
+  --header-height: #{rem($header-height)};
+  --container: #{rem($container-max)};
+  --ease-out: #{$ease-out};
+
+  @each $name, $value in $radii {
+    --radius-#{$name}: #{rem($value)};
+  }
+
+  color-scheme: dark;
+  @include theme-tokens(map.get($themes, dark));
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  @include theme-tokens(map.get($themes, light));
+}

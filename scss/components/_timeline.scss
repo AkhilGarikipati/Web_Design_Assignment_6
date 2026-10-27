@@ -1,0 +1,115 @@
+// ==========================================================================
+// components/_timeline.scss
+// Vertical launch-history timeline. CSS Grid: a left rail on mobile,
+// alternating left/right cards around a center spine from tablet up.
+// ==========================================================================
+@use '../abstracts' as *;
+
+.timeline {
+  @extend %list-reset;
+  position: relative;
+  display: grid;
+  gap: spacing(3);
+
+  // Glowing spine.
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: rem(15px);
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, var(--accent) 6%, var(--accent-2) 94%, transparent);
+    box-shadow: 0 0 12px var(--glow);
+  }
+
+  &__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: rem(32px) minmax(0, 1fr);
+    gap: spacing(2);
+    align-items: start;
+  }
+
+  &__marker {
+    position: relative;
+    width: rem(32px);
+    height: rem(32px);
+    margin-top: spacing(2.5);
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow:
+      0 0 0 6px color-mix(in srgb, var(--accent) 12%, transparent),
+      0 0 18px var(--glow);
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: rem(8px);
+      border-radius: 50%;
+      background: var(--accent);
+    }
+  }
+
+  &__card {
+    @extend %card-base;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: spacing(1);
+    @include accent-edge(left);
+    @include hover-lift(4px);
+  }
+
+  &__date {
+    font-family: var(--font-mono);
+    font-size: rem(13px);
+    letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+
+  &__title {
+    font-size: rem(20px);
+  }
+
+  &__text {
+    font-size: rem(15px);
+    color: var(--text-muted);
+  }
+
+  @include breakpoint(md) {
+    gap: spacing(1);
+
+    &::before {
+      left: 50%;
+      translate: -50% 0;
+    }
+
+    &__item {
+      grid-template-columns: minmax(0, 1fr) rem(56px) minmax(0, 1fr);
+      gap: 0;
+    }
+
+    &__marker {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: center;
+    }
+
+    // Odd items sit left of the spine, so their accent edge flips right.
+    &__item:nth-child(odd) &__card {
+      grid-column: 1;
+      grid-row: 1;
+      align-items: flex-end;
+      text-align: right;
+      border-left: 1px solid var(--border);
+      @include accent-edge(right);
+    }
+
+    &__item:nth-child(even) &__card {
+      grid-column: 3;
+      grid-row: 1;
+    }
+  }
+}

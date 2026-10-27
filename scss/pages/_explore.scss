@@ -1,0 +1,540 @@
+// ==========================================================================
+// pages/_explore.scss
+// Explore page: page hero + planet lineup, planet gallery, comparison table.
+// ==========================================================================
+@use 'sass:map';
+@use '../abstracts' as *;
+
+// ---- Page hero --------------------------------------------------------------
+.page-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block: spacing(8) spacing(5);
+  border-bottom: 1px solid var(--border);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(700px 400px at 50% 0%, var(--nebula-1), transparent 70%);
+  }
+
+  &__inner {
+    position: relative;
+    z-index: z(base);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: spacing(3);
+    text-align: center;
+    @include container;
+  }
+
+  .lead {
+    margin-inline: auto;
+  }
+}
+
+.breadcrumb {
+  @extend %list-reset;
+  display: flex;
+  align-items: center;
+  gap: spacing(1);
+  font-size: rem(14px);
+  color: var(--text-muted);
+
+  li + li::before {
+    content: '/';
+    margin-right: spacing(1);
+    opacity: 0.5;
+  }
+
+  a {
+    color: var(--text-muted);
+
+    &:hover {
+      color: var(--accent);
+    }
+  }
+
+  [aria-current='page'] {
+    color: var(--heading);
+  }
+}
+
+// Jump links styled as chips (Flexbox).
+.chip-nav {
+  @extend %list-reset;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: spacing(1);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: spacing(0.75);
+  padding: spacing(1) spacing(2);
+  border-radius: radius(pill);
+  font-family: var(--font-heading);
+  font-size: rem(14px);
+  font-weight: weight(medium);
+  color: var(--heading);
+  @include glass-effect($blur: 8px);
+  transition:
+    border-color $duration-fast ease,
+    transform $duration-fast $ease-out;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--heading);
+    transform: translateY(-2px);
+  }
+
+  @include focus-ring;
+}
+
+// Solar-system lineup: every planet links to its gallery tile.
+// Sizes scale with the viewport via --unit × --rel (set inline per planet).
+// Each planet sits in a slot as tall as the largest one (--max-rel), so the
+// planets share one center line and the labels line up.
+.lineup {
+  --unit: clamp(#{rem(4.5px)}, 1.15vw, #{rem(9px)});
+  --max-rel: 11;
+
+  @extend %list-reset;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: spacing(2) clamp(#{spacing(1.5)}, 3vw, #{spacing(4)});
+  width: 100%;
+  margin-top: spacing(3);
+  padding: spacing(3) spacing(2);
+
+  // Orbit path through the planet centers (desktop, single row only).
+  &::before {
+    content: '';
+    position: absolute;
+    top: calc(#{spacing(3) + spacing(1)} + var(--max-rel) * var(--unit) / 2);
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+
+    @include breakpoint(lg, down) {
+      display: none;
+    }
+  }
+
+  &__link {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: spacing(1.25);
+    padding: spacing(1);
+    border-radius: radius(md);
+    color: var(--text-muted);
+    font-size: rem(12px);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color $duration-fast ease;
+
+    .planet {
+      --size: calc(var(--rel) * var(--unit));
+      margin-block: calc((var(--max-rel) - var(--rel)) * var(--unit) / 2);
+      transition: scale $duration-base $ease-out;
+    }
+
+    &:hover {
+      color: var(--heading);
+
+      .planet {
+        scale: 1.15;
+      }
+    }
+
+    @include focus-ring;
+  }
+
+  .planet-saturn {
+    margin-inline: calc(var(--unit) * 3);
+  }
+
+  // Phones/tablets: a tidy 4 × 2 grid instead of a ragged wrap.
+  @include breakpoint(md, down) {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding-inline: 0;
+
+    .planet-saturn {
+      margin-inline: 0;
+    }
+  }
+}
+
+// ---- CSS GRID LAYOUT (template areas): planet gallery ----------------------
+// Saturn is the featured tile spanning 2 columns × 2 rows; Jupiter spans 2.
+.planet-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: spacing(3);
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'saturn  saturn'
+      'earth   mars'
+      'venus   mercury'
+      'jupiter jupiter'
+      'neptune uranus';
+  }
+
+  @include breakpoint(lg) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: minmax(rem(280px), auto);
+    grid-template-areas:
+      'saturn  saturn  earth   mars'
+      'saturn  saturn  venus   mercury'
+      'jupiter jupiter neptune uranus';
+  }
+}
+
+// FEATURE: @each over map.keys() + interpolation: grid-area per planet tile.
+// Only from md up; single-column mobile uses normal flow.
+@each $name in map.keys($planets) {
+  .planet-tile--#{$name} {
+    @include breakpoint(md) {
+      grid-area: $name;
+    }
+  }
+}
+
+.planet-tile {
+  @extend %card-base;
+  display: flex;
+  flex-direction: column;
+  gap: spacing(2);
+  transition:
+    transform $duration-base $ease-out,
+    border-color $duration-base ease,
+    box-shadow $duration-base ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    z-index: -1;
+    height: 60%;
+    background: radial-gradient(ellipse at 50% 100%, var(--planet-glow), transparent 70%);
+    opacity: 0.35;
+    transition: opacity $duration-base ease;
+  }
+
+  &__visual {
+    display: grid;
+    place-items: center;
+    min-height: rem(170px);
+    padding-block: spacing(2);
+
+    .planet {
+      transition: scale $duration-slow $ease-out;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(1);
+    margin-top: auto;
+  }
+
+  &__type {
+    font-size: rem(12px);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--planet-base) 45%, var(--heading));
+  }
+
+  &__name {
+    font-size: rem(24px);
+  }
+
+  &__text {
+    font-size: rem(15px);
+    color: var(--text-muted);
+  }
+
+  // Facts read as label/value rows; the featured tile switches to chips.
+  &__facts {
+    display: flex;
+    flex-direction: column;
+    margin: spacing(1) 0 0;
+    padding: 0 spacing(1.5);
+    border: 1px solid var(--border);
+    border-radius: radius(sm);
+    background: var(--surface-subtle);
+
+    div {
+      padding-block: spacing(0.75);
+      @include flex-between($align: baseline, $gap: spacing(1));
+
+      & + div {
+        border-top: 1px dashed var(--border);
+      }
+    }
+
+    dt {
+      font-size: rem(11px);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    dd {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: rem(15px);
+      font-weight: weight(semibold);
+      color: var(--heading);
+      white-space: nowrap;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--planet-base) 45%, transparent);
+    box-shadow: 0 24px 60px -24px var(--planet-glow);
+
+    &::after {
+      opacity: 0.8;
+    }
+
+    .planet {
+      scale: 1.06;
+    }
+  }
+
+  &--featured {
+    padding: spacing(4);
+
+    .planet-tile__visual {
+      flex: 1;
+      min-height: rem(260px);
+    }
+
+    .planet {
+      --size: clamp(#{rem(130px)}, 38vw, #{rem(200px)});
+    }
+
+    .planet-tile__name {
+      font-size: fluid(30px, 40px);
+    }
+
+    // From md up the featured tile has room for fact chips in one row.
+    @include breakpoint(md) {
+      .planet-tile__facts {
+        flex-direction: row;
+        gap: spacing(1);
+        padding: 0;
+        border: 0;
+        background: none;
+
+        div {
+          flex: 1 1 0;
+          flex-direction: column;
+          align-items: flex-start;
+          padding: spacing(1) spacing(1.5);
+          border: 1px solid var(--border);
+          border-radius: radius(sm);
+          background: var(--surface-subtle);
+        }
+      }
+    }
+  }
+
+  &--wide {
+    @include breakpoint(md) {
+      flex-direction: row;
+      align-items: center;
+      gap: spacing(4);
+
+      .planet-tile__visual {
+        flex: 0 0 auto;
+        padding-inline: spacing(2);
+      }
+
+      .planet-tile__body {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+.planet-highlights {
+  @extend %list-reset;
+  display: flex;
+  flex-direction: column;
+  gap: spacing(1);
+  margin-top: spacing(1);
+  font-size: rem(14px);
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: spacing(1);
+  }
+
+  .icon {
+    margin-top: rem(2px);
+    color: var(--planet-base);
+  }
+}
+
+// ---- Mission comparison table -----------------------------------------------
+$compare-max-years: 50;
+
+.compare {
+  &__wrap {
+    @extend %card-base;
+    padding: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &__table {
+    width: 100%;
+    min-width: rem(820px);
+    font-size: rem(15px);
+
+    caption {
+      @extend %visually-hidden;
+    }
+
+    th,
+    td {
+      padding: spacing(2) spacing(2.5);
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    thead th {
+      background: var(--surface-strong);
+      font-size: rem(12px);
+      font-weight: weight(semibold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    tbody {
+      tr {
+        transition: background-color $duration-fast ease;
+
+        &:hover {
+          background: var(--surface);
+        }
+
+        &:last-child > * {
+          border-bottom: 0;
+        }
+      }
+
+      th {
+        font-family: var(--font-heading);
+        font-weight: weight(semibold);
+        color: var(--heading);
+      }
+    }
+  }
+
+  &__mission {
+    display: flex;
+    align-items: center;
+    gap: spacing(1.5);
+    white-space: nowrap;
+  }
+
+  &__dot {
+    width: rem(12px);
+    height: rem(12px);
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 0 10px var(--glow);
+  }
+
+  &__duration {
+    display: flex;
+    align-items: center;
+    gap: spacing(1.5);
+    min-width: rem(170px);
+  }
+
+  &__bar {
+    position: relative;
+    flex: 1;
+    height: rem(8px);
+    overflow: hidden;
+    border-radius: radius(pill);
+    background: var(--surface-strong);
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: calc(var(--value) / #{$compare-max-years} * 100%);
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 12px var(--glow);
+    }
+  }
+
+  &__years {
+    min-width: 4ch;
+    font-family: var(--font-mono);
+    font-size: rem(13px);
+    color: var(--text-muted);
+  }
+
+  &__note {
+    margin-top: spacing(2);
+    font-size: rem(13px);
+    color: var(--text-muted);
+  }
+}
+
+// ---- Closing banner (links back to Home) -----------------------------------
+.cta-banner {
+  @extend %card-base;
+  @extend %gradient-border;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: spacing(3);
+  padding: spacing(5) spacing(4);
+  background:
+    radial-gradient(circle at 0% 50%, var(--nebula-2), transparent 55%),
+    radial-gradient(circle at 100% 50%, var(--nebula-1), transparent 55%),
+    var(--surface);
+
+  @include breakpoint(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: spacing(6);
+  }
+
+  &__copy {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(1);
+  }
+}

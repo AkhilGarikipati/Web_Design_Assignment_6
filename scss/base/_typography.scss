@@ -1,0 +1,96 @@
+// ==========================================================================
+// base/_typography.scss
+// Type scale, links and text utilities.
+// ==========================================================================
+@use 'sass:list';
+@use '../abstracts' as *;
+
+// Heading level → (min size, max size) for fluid().
+$heading-scale: (
+  1: (40px, 72px),
+  2: (30px, 48px),
+  3: (21px, 26px),
+  4: (17px, 20px),
+);
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  font-weight: weight(bold);
+  line-height: $line-height-tight;
+  letter-spacing: -0.02em;
+  color: var(--heading);
+  text-wrap: balance;
+}
+
+// FEATURE: @each + interpolated selectors: generates h1-h4 and .h1-.h4.
+@each $level, $range in $heading-scale {
+  h#{$level},
+  .h#{$level} {
+    font-size: fluid(list.nth($range, 1), list.nth($range, 2));
+  }
+}
+
+h1,
+.h1 {
+  font-family: var(--font-display);
+  letter-spacing: 0;
+  line-height: 1.08;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color $duration-fast ease;
+
+  &:hover {
+    color: var(--heading);
+  }
+}
+
+strong {
+  color: var(--heading);
+  font-weight: weight(semibold);
+}
+
+.eyebrow {
+  @extend %eyebrow;
+}
+
+.lead {
+  max-width: 60ch;
+  font-size: fluid(17px, 20px);
+  color: var(--text-muted);
+}
+
+.text-gradient {
+  @include gradient-text;
+}
+
+.sr-only {
+  @extend %visually-hidden;
+}
+
+.skip-link {
+  position: absolute;
+  top: spacing(-8);
+  left: spacing(2);
+  z-index: z(skip-link);
+  padding: spacing(1) spacing(2);
+  border-radius: radius(sm);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: weight(semibold);
+  transition: top $duration-fast ease;
+
+  &:focus {
+    top: spacing(1.5);
+    color: var(--on-accent);
+  }
+}

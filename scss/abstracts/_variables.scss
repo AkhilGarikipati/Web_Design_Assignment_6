@@ -1,0 +1,103 @@
+// ==========================================================================
+// abstracts/_variables.scss
+// FEATURE: Variables: one source of truth for colors, fonts, spacing,
+//          radii, z-index, breakpoints and motion.
+// FEATURE: Maps: grouped tokens that @each loops and functions read.
+// ==========================================================================
+
+// ---- Brand palette --------------------------------------------------------
+$color-void: #05060f;
+$color-midnight: #0b0e27;
+$color-nebula: #1b1446;
+$color-cyan: #3be8ff;
+$color-violet: #a77bff;
+$color-magenta: #ff5fd2;
+$color-amber: #ffb547;
+$color-mint: #4dffb4;
+$color-white: #ffffff;
+$color-mist: #f4f5fc;
+$color-ink: #0d0f2e;
+
+// ---- Typography -----------------------------------------------------------
+$font-display: ('Orbitron', 'Space Grotesk', system-ui, sans-serif);
+$font-heading: ('Space Grotesk', system-ui, sans-serif);
+$font-body: ('Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif);
+$font-mono: (ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, monospace);
+
+$base-font-size: 16px;
+$line-height-base: 1.65;
+$line-height-tight: 1.15;
+
+$font-weights: (
+  regular: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
+  black: 800,
+);
+
+// ---- Spacing & layout -----------------------------------------------------
+$spacing-unit: 8px; // spacing(1) = 8px, spacing(2) = 16px ...
+$container-max: 1200px;
+$header-height: 72px;
+
+$radii: (
+  sm: 8px,
+  md: 14px,
+  lg: 22px,
+  xl: 32px,
+  pill: 999px,
+);
+
+$z-layers: (
+  starfield: 0,
+  base: 1,
+  raised: 10,
+  dropdown: 50,
+  header: 100,
+  skip-link: 999,
+);
+
+$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+);
+
+// ---- Motion ---------------------------------------------------------------
+$ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+$duration-fast: 0.2s;
+$duration-base: 0.4s;
+$duration-slow: 0.8s;
+
+// ---- Planets (read by @each in components/_planet.scss) -------------------
+// base/shade drive the orb gradient, texture picks a branch in the
+// planet-texture() mixin, and ring/tilt are only set on ringed planets.
+$planets: (
+  mercury: (base: #b9aea3, shade: #5f544c, texture: craters),
+  venus: (base: #f0c879, shade: #a8682f, texture: clouds),
+  earth: (base: #3d8ef0, shade: #12357a, texture: continents),
+  mars: (base: #e86a43, shade: #7a2414, texture: craters),
+  jupiter: (base: #e0ad7a, shade: #7f4f2c, texture: bands),
+  saturn: (base: #ecd5a0, shade: #9c7b45, texture: bands, ring: true, tilt: -18deg),
+  uranus: (base: #9be9ee, shade: #3b9aa3, texture: none, ring: true, tilt: -78deg, ring-size: 150%),
+  neptune: (base: #5274ff, shade: #1a248f, texture: clouds),
+);
+
+// ---- Mission status → theme token (read by @each in components/_card.scss)
+$status-tokens: (
+  active: success,
+  completed: info,
+  planned: warning,
+  legacy: legacy,
+);
+
+// ---- Mission card color themes --------------------------------------------
+$mission-themes: (
+  lunar: (a: #8f9bff, b: $color-cyan),
+  crewed: (a: $color-cyan, b: $color-mint),
+  deep-space: (a: $color-violet, b: $color-magenta),
+  telescope: (a: $color-amber, b: $color-violet),
+  mars: (a: #ff7a4d, b: $color-amber),
+);

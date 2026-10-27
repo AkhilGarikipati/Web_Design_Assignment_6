@@ -1,0 +1,76 @@
+// ==========================================================================
+// abstracts/_placeholders.scss
+// FEATURE: Placeholder selectors: %name rules emit no CSS of their own;
+//          components share them with @extend, which groups selectors.
+// ==========================================================================
+@use 'variables' as *;
+@use 'functions' as *;
+@use 'mixins' as *;
+
+// Glass card used by mission cards, planet tiles, timeline cards ...
+%card-base {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: spacing(3);
+  border-radius: radius(lg);
+  box-shadow: var(--shadow);
+  @include glass-effect;
+}
+
+// Soft neon halo.
+%glow {
+  box-shadow:
+    0 0 0 1px var(--border-strong),
+    0 18px 50px -18px var(--glow),
+    0 0 36px -8px var(--glow-2);
+}
+
+// Hidden on screen, still read by screen readers.
+%visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+%list-reset {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+// Small uppercase label above headings.
+%eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: spacing(1);
+  font-family: var(--font-heading);
+  font-size: rem(12px);
+  font-weight: weight(semibold);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+// 1px gradient border drawn by a masked pseudo-element.
+%gradient-border {
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, var(--accent), transparent 40%, transparent 60%, var(--accent-2));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+}

@@ -1,0 +1,181 @@
+// ==========================================================================
+// abstracts/_mixins.scss
+// FEATURE: Mixins: reusable blocks with arguments, defaults and @content.
+// FEATURE: @if / @else if / @else: branching logic inside mixins.
+// ==========================================================================
+@use 'sass:map';
+@use 'variables' as *;
+@use 'functions' as *;
+
+// FEATURE: Mixin + @if/@else + @content: responsive breakpoints.
+// Mobile-first by default: @include breakpoint(md) { ... }
+@mixin breakpoint($name, $direction: up) {
+  @if not map.has-key($breakpoints, $name) {
+    @error 'Unknown breakpoint `#{$name}`. Use one of: #{map.keys($breakpoints)}.';
+  }
+  $width: map.get($breakpoints, $name);
+
+  @if $direction == up {
+    @media (min-width: $width) {
+      @content;
+    }
+  } @else if $direction == down {
+    @media (max-width: #{$width - 0.02px}) {
+      @content;
+    }
+  } @else {
+    @error 'breakpoint() direction must be `up` or `down`, got `#{$direction}`.';
+  }
+}
+
+// FEATURE: Interpolation in property names: vendor-prefixed declarations.
+// @include prefixed(backdrop-filter, blur(12px)) →
+//   -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+@mixin prefixed($property, $value, $prefixes: (webkit)) {
+  @each $prefix in $prefixes {
+    -#{$prefix}-#{$property}: $value;
+  }
+  #{$property}: $value;
+}
+
+// FEATURE: Interpolation in property names: border-#{$side}.
+@mixin accent-edge($side: left, $width: 3px, $color: var(--accent)) {
+  border-#{$side}: $width solid $color;
+}
+
+// Flexbox helpers. A null $gap leaves the gap declaration out.
+@mixin flex-center($direction: row, $gap: null) {
+  display: flex;
+  @if $direction != row {
+    flex-direction: $direction;
+  }
+  align-items: center;
+  justify-content: center;
+  gap: $gap;
+}
+
+@mixin flex-between($align: center, $gap: null, $wrap: false) {
+  display: flex;
+  align-items: $align;
+  justify-content: space-between;
+  gap: $gap;
+  @if $wrap {
+    flex-wrap: wrap;
+  }
+}
+
+// Glassmorphism surface; $strength picks the fill. Pass $blur: null for
+// elements that already sit on a blurred parent (avoids nested filters).
+@mixin glass-effect($blur: 18px, $strength: normal, $bordered: true) {
+  @if $strength == strong {
+    background: var(--surface-strong);
+  } @else if $strength == subtle {
+    background: var(--surface-subtle);
+  } @else {
+    background: var(--surface);
+  }
+  @if $blur {
+    @include prefixed(backdrop-filter, blur($blur) saturate(160%));
+  }
+  @if $bordered {
+    border: 1px solid var(--border);
+  }
+}
+
+@mixin gradient-text($from: var(--accent), $to: var(--accent-2), $angle: 120deg) {
+  background: linear-gradient($angle, $from, $to);
+  @include prefixed(background-clip, text);
+  color: transparent;
+}
+
+@mixin container($max: $container-max, $gutter: 3) {
+  width: 100%;
+  max-width: rem($max);
+  margin-inline: auto;
+  padding-inline: spacing($gutter);
+}
+
+// Lift + glow on hover. Emits nested rules, so include it after declarations.
+@mixin hover-lift($distance: 6px, $glow: var(--glow)) {
+  transition:
+    transform $duration-base $ease-out,
+    box-shadow $duration-base $ease-out,
+    border-color $duration-base $ease-out;
+
+  &:hover {
+    transform: translateY(-$distance);
+    border-color: var(--border-strong);
+    box-shadow: 0 24px 60px -24px $glow, 0 0 0 1px var(--border-strong);
+  }
+}
+
+@mixin focus-ring($offset: 3px) {
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: $offset;
+  }
+}
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+@mixin motion-ok {
+  @media (prefers-reduced-motion: no-preference) {
+    @content;
+  }
+}
+
+// FEATURE: @for + interpolated selectors: staggered animation delays.
+@mixin stagger($count, $step: 0.08s, $start: 0s) {
+  @for $i from 1 through $count {
+    &:nth-child(#{$i}) {
+      animation-delay: $start + $step * ($i - 1);
+    }
+  }
+}
+
+// FEATURE: @if / @else if / @else inside a mixin: each planet texture
+// type (bands, craters, continents, clouds) gets its own gradient stack.
+@mixin planet-texture($type, $shade) {
+  $ink: alpha($shade, 0.55);
+
+  @if $type == bands {
+    background-image:
+      radial-gradient(ellipse 10% 7% at 30% 64%, alpha(shade($shade, 10%), 0.8), transparent 70%),
+      linear-gradient(
+        180deg,
+        transparent 0 14%, $ink 14% 20%, transparent 20% 30%,
+        rgba(255, 255, 255, 0.16) 30% 36%, transparent 36% 46%,
+        $ink 46% 55%, transparent 55% 66%,
+        rgba(255, 255, 255, 0.14) 66% 71%, transparent 71% 80%,
+        $ink 80% 85%, transparent 85%
+      );
+  } @else if $type == craters {
+    background-image:
+      radial-gradient(circle at 18% 30%, $ink 0 5%, transparent 6%),
+      radial-gradient(circle at 38% 68%, $ink 0 7%, transparent 8%),
+      radial-gradient(circle at 62% 24%, $ink 0 4%, transparent 5%),
+      radial-gradient(circle at 80% 58%, $ink 0 6%, transparent 7%),
+      radial-gradient(circle at 52% 46%, alpha($shade, 0.3) 0 11%, transparent 12%);
+  } @else if $type == continents {
+    background-image:
+      radial-gradient(ellipse 30% 5% at 30% 18%, rgba(255, 255, 255, 0.55), transparent 70%),
+      radial-gradient(ellipse 34% 4% at 72% 82%, rgba(255, 255, 255, 0.45), transparent 70%),
+      radial-gradient(ellipse 14% 22% at 22% 46%, #3e9d4f 0 55%, transparent 60%),
+      radial-gradient(ellipse 10% 14% at 30% 66%, #5aa83f 0 55%, transparent 60%),
+      radial-gradient(ellipse 18% 16% at 66% 38%, #4e9a3c 0 55%, transparent 60%),
+      radial-gradient(ellipse 8% 18% at 80% 58%, #7a9a3a 0 55%, transparent 60%);
+  } @else if $type == clouds {
+    background-image: linear-gradient(
+      172deg,
+      transparent 0 22%, rgba(255, 255, 255, 0.2) 28%, transparent 36% 52%,
+      rgba(255, 255, 255, 0.14) 58%, transparent 66% 78%,
+      rgba(255, 255, 255, 0.18) 84%, transparent 90%
+    );
+  } @else {
+    background-image: none;
+  }
+}

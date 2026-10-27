@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orbit | Space Exploration &amp; Mission Tracker</title>
+  <meta name="description" content="Orbit tracks humanity's journey through space: featured missions, live mission status and key numbers from Apollo 11 to Voyager 1.">
+  <meta name="theme-color" content="#05060f">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="css/main.css">
+  <!-- Loaded in <head> so the saved theme applies before first paint -->
+  <script src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ===================== Header (shared) ===================== -->
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="index.html" aria-label="Orbit home">
+        <svg class="brand__logo" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+          <circle class="brand__planet" cx="20" cy="20" r="8" />
+          <g class="brand__orbit">
+            <ellipse cx="20" cy="20" rx="18" ry="7" transform="rotate(-24 20 20)" />
+          </g>
+          <circle class="brand__moon" cx="35.5" cy="13" r="2.4" />
+        </svg>
+        <span>ORBIT</span>
+      </a>
+
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <ul class="site-nav__list">
+          <li><a class="site-nav__link" href="index.html" aria-current="page">Home</a></li>
+          <li><a class="site-nav__link" href="index.html#missions">Missions</a></li>
+          <li><a class="site-nav__link" href="explore.html">Explore</a></li>
+          <li><a class="site-nav__link" href="explore.html#planets">Planets</a></li>
+          <li><a class="site-nav__link" href="explore.html#timeline">Timeline</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme">
+          <svg class="icon theme-toggle__sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></svg>
+          <svg class="icon theme-toggle__moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+        </button>
+        <a class="btn btn--primary btn--sm" href="explore.html">Launch tracker</a>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open menu">
+          <span class="nav-toggle__bars" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ===================== Hero ===================== -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="starfield" aria-hidden="true">
+        <span class="starfield__layer starfield__layer--1"></span>
+        <span class="starfield__layer starfield__layer--2"></span>
+        <span class="starfield__layer starfield__layer--3"></span>
+      </div>
+
+      <div class="hero__inner">
+        <div class="hero__copy">
+          <p class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span> Mission control · Live data</p>
+          <h1 class="hero__title" id="hero-title">Track humanity's journey <span class="text-gradient">across the cosmos</span></h1>
+          <p class="lead">Orbit brings launches, probes and planetary missions together in one place, from Apollo 11's first steps on the Moon to Voyager 1's signal from interstellar space.</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary btn--lg" href="explore.html">
+              Explore the solar system
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+            </a>
+            <a class="btn btn--ghost btn--lg" href="#missions">Featured missions</a>
+          </div>
+          <ul class="hero__meta">
+            <li>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="2" /><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.24a6 6 0 0 1 0-8.49M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14" /></svg>
+              312 missions tracked
+            </li>
+            <li>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="3" /><ellipse cx="12" cy="12" rx="10" ry="4" /></svg>
+              8 planets mapped
+            </li>
+            <li>
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+              Updated daily
+            </li>
+          </ul>
+        </div>
+
+        <div class="hero__visual" aria-hidden="true">
+          <div class="orbit orbit--outer"><span class="orbit__body orbit__body--moon"></span></div>
+          <div class="orbit"><span class="orbit__body"></span></div>
+          <div class="planet planet--xl planet-earth">
+            <span class="planet__orb"></span>
+          </div>
+
+          <div class="hero-chip hero-chip--top">
+            <span class="pulse-dot"></span>
+            <div>
+              <strong>ISS · Crew aboard</strong>
+              <span>~400 km low Earth orbit</span>
+            </div>
+          </div>
+          <div class="hero-chip hero-chip--bottom">
+            <span class="hero-chip__icon">
+              <svg class="icon" viewBox="0 0 24 24" focusable="false"><path d="M13 7 9 3 5 7l4 4" /><path d="m17 11 4 4-4 4-4-4" /><path d="m8 12 4 4 6-6-4-4Z" /><path d="m16 8 3-3" /><path d="M9 21a6 6 0 0 0-6-6" /></svg>
+            </span>
+            <div>
+              <strong>Voyager 1</strong>
+              <span>25B+ km · interstellar space</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Stats strip (Flexbox) ===================== -->
+    <section class="stats" aria-label="Orbit by the numbers">
+      <div class="container">
+        <dl class="stats__panel">
+          <div class="stats__item">
+            <dt class="stats__label">Missions tracked in the Orbit archive</dt>
+            <dd class="stats__value">312</dd>
+          </div>
+          <div class="stats__item">
+            <dt class="stats__label">Voyager 1's distance from Earth</dt>
+            <dd class="stats__value">25B<span class="stats__unit">+ km</span></dd>
+          </div>
+          <div class="stats__item">
+            <dt class="stats__label">Crewed space stations in orbit</dt>
+            <dd class="stats__value">2</dd>
+          </div>
+          <div class="stats__item">
+            <dt class="stats__label">People who have walked on the Moon</dt>
+            <dd class="stats__value">12</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ===================== Featured missions (CSS Grid) ===================== -->
+    <section class="section missions" id="missions" aria-labelledby="missions-title">
+      <div class="container">
+        <header class="section-head section-head--split">
+          <div class="section-head__copy">
+            <p class="eyebrow">Featured missions</p>
+            <h2 id="missions-title">Milestones that redefined what's possible</h2>
+            <p class="lead">Five missions that changed how we see the Moon, the planets and the universe beyond.</p>
+          </div>
+          <a class="btn btn--ghost" href="explore.html#timeline">
+            Full launch history
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+          </a>
+        </header>
+
+        <div class="missions__grid">
+          <!-- Featured: spans two columns -->
+          <article class="mission-card mission-card--featured mission-card--lunar reveal" aria-labelledby="m-artemis">
+            <div class="mission-card__visual" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" focusable="false"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" /><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" /><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" /></svg>
+            </div>
+            <div class="mission-card__body">
+              <div class="mission-card__header">
+                <span class="tag tag--active">Active</span>
+                <span class="mission-card__agency">NASA · ESA · CSA · JAXA</span>
+              </div>
+              <h3 class="mission-card__title" id="m-artemis">Artemis Program</h3>
+              <p class="mission-card__text">NASA's return to the Moon. Artemis I sent an uncrewed Orion capsule around the Moon in 2022. Artemis II carries four astronauts on a lunar flyby, the step before the first crewed landing near the lunar south pole.</p>
+              <ul class="mission-card__meta">
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">First flight</span><span class="mission-card__meta-value">Nov 16, 2022</span></li>
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Vehicle</span><span class="mission-card__meta-value">SLS + Orion</span></li>
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Destination</span><span class="mission-card__meta-value">The Moon</span></li>
+              </ul>
+              <a class="mission-card__link" href="explore.html#timeline">
+                View on the timeline
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+              </a>
+            </div>
+          </article>
+
+          <article class="mission-card mission-card--crewed reveal" aria-labelledby="m-apollo">
+            <div class="mission-card__visual" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" focusable="false"><path d="M6 21V4" /><path d="M6 4h11l-2.5 3.5L17 11H6" /><path d="M2 21h20" /></svg>
+            </div>
+            <div class="mission-card__body">
+              <div class="mission-card__header">
+                <span class="tag tag--completed">Completed</span>
+                <span class="mission-card__agency">NASA</span>
+              </div>
+              <h3 class="mission-card__title" id="m-apollo">Apollo 11</h3>
+              <p class="mission-card__text">On 20 July 1969, Neil Armstrong and Buzz Aldrin became the first people to walk on the Moon while Michael Collins orbited above in Columbia.</p>
+              <ul class="mission-card__meta">
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Launch</span><span class="mission-card__meta-value">Jul 16, 1969</span></li>
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Crew</span><span class="mission-card__meta-value">3</span></li>
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Duration</span><span class="mission-card__meta-value">8 days</span></li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="mission-card mission-card--deep-space reveal" aria-labelledby="m-voyager">
+            <div class="mission-card__visual" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" focusable="false"><path d="M13 7 9 3 5 7l4 4" /><path d="m17 11 4 4-4 4-4-4" /><path d="m8 12 4 4 6-6-4-4Z" /><path d="m16 8 3-3" /><path d="M9 21a6 6 0 0 0-6-6" /></svg>
+            </div>
+            <div class="mission-card__body">
+              <div class="mission-card__header">
+                <span class="tag tag--active">Active</span>
+                <span class="mission-card__agency">NASA / JPL</span>
+              </div>
+              <h3 class="mission-card__title" id="m-voyager">Voyager 1</h3>
+              <p class="mission-card__text">Launched in 1977, Voyager 1 flew past Jupiter and Saturn. In 2012 it became the first spacecraft to reach interstellar space, and it still sends data home.</p>
+              <ul class="mission-card__meta">
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Launch</span><span class="mission-card__meta-value">Sep 5, 1977</span></li>
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Distance</span><span class="mission-card__meta-value">25B+ km</span></li>
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Power</span><span class="mission-card__meta-value">RTG</span></li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="mission-card mission-card--telescope reveal" aria-labelledby="m-hubble">
+            <div class="mission-card__visual" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" focusable="false"><path d="M3 13.5 15 7l2 4-12 6.5z" /><path d="m15 7 3-1.6 2 4-3 1.6" /><path d="M10 15.5 7 21M10 15.5l3 5.5" /></svg>
+            </div>
+            <div class="mission-card__body">
+              <div class="mission-card__header">
+                <span class="tag tag--active">Active</span>
+                <span class="mission-card__agency">NASA · ESA</span>
+              </div>
+              <h3 class="mission-card__title" id="m-hubble">Hubble Space Telescope</h3>
+              <p class="mission-card__text">Released from Space Shuttle Discovery in 1990, Hubble has made more than 1.6 million observations and helped measure how fast the universe is expanding.</p>
+              <ul class="mission-card__meta">
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Launch</span><span class="mission-card__meta-value">Apr 24, 1990</span></li>
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Orbit</span><span class="mission-card__meta-value">Low Earth</span></li>
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Servicing</span><span class="mission-card__meta-value">5 missions</span></li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="mission-card mission-card--mars reveal" aria-labelledby="m-perseverance">
+            <div class="mission-card__visual" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" focusable="false"><rect x="4" y="9" width="13" height="5" rx="1" /><circle cx="6" cy="18" r="2" /><circle cx="11" cy="18" r="2" /><circle cx="16" cy="18" r="2" /><path d="M14 9V5h4M18 5l2-2" /></svg>
+            </div>
+            <div class="mission-card__body">
+              <div class="mission-card__header">
+                <span class="tag tag--active">Active</span>
+                <span class="mission-card__agency">NASA / JPL</span>
+              </div>
+              <h3 class="mission-card__title" id="m-perseverance">Mars Perseverance</h3>
+              <p class="mission-card__text">Landed in Jezero Crater in 2021 to search for signs of ancient microbial life and collect rock samples. It carried Ingenuity, the first aircraft to fly on another planet.</p>
+              <ul class="mission-card__meta">
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Landed</span><span class="mission-card__meta-value">Feb 18, 2021</span></li>
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Site</span><span class="mission-card__meta-value">Jezero Crater</span></li>
+                <li class="mission-card__meta-item"><span class="mission-card__meta-label">Mass</span><span class="mission-card__meta-value">1,025 kg</span></li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Mission control bento (Grid template areas) ===================== -->
+    <section class="section features" aria-labelledby="features-title">
+      <div class="container">
+        <header class="section-head section-head--center">
+          <p class="eyebrow">Mission control</p>
+          <h2 id="features-title">Follow the final frontier from one dashboard</h2>
+          <p class="lead">Mission status, planet data and decades of launches, organized so you can explore at your own pace.</p>
+        </header>
+
+        <div class="features__grid">
+          <article class="feature-tile feature-tile--highlight features__tile--live reveal">
+            <span class="feature-tile__icon" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="2" /><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.24a6 6 0 0 1 0-8.49M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14" /></svg>
+            </span>
+            <h3 class="feature-tile__title">Live mission feed</h3>
+            <p class="feature-tile__text">See what the spacecraft still in service are doing right now.</p>
+            <ul class="feed">
+              <li class="feed__item">
+                <div><span class="feed__name">James Webb Space Telescope</span><span class="feed__status">Observing from Sun–Earth L2</span></div>
+                <span class="tag tag--active">Active</span>
+              </li>
+              <li class="feed__item">
+                <div><span class="feed__name">Perseverance</span><span class="feed__status">Exploring Jezero Crater, Mars</span></div>
+                <span class="tag tag--active">Active</span>
+              </li>
+              <li class="feed__item">
+                <div><span class="feed__name">Voyager 1</span><span class="feed__status">Signal travel time ≈ 23 hours</span></div>
+                <span class="tag tag--active">Active</span>
+              </li>
+              <li class="feed__item">
+                <div><span class="feed__name">International Space Station</span><span class="feed__status">Crewed continuously since 2000</span></div>
+                <span class="tag tag--active">Active</span>
+              </li>
+            </ul>
+          </article>
+
+          <article class="feature-tile features__tile--atlas reveal">
+            <span class="feature-tile__icon" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="3" /><ellipse cx="12" cy="12" rx="10" ry="4" /></svg>
+            </span>
+            <h3 class="feature-tile__title">Planet atlas</h3>
+            <p class="feature-tile__text">Size, moons and rotation for all eight planets, drawn entirely in CSS.</p>
+            <div class="mini-planets" aria-hidden="true">
+              <div class="planet planet-mars"><span class="planet__orb"></span></div>
+              <div class="planet planet-saturn"><span class="planet__orb"></span><span class="planet__ring"></span></div>
+              <div class="planet planet-neptune"><span class="planet__orb"></span></div>
+            </div>
+            <a class="feature-tile__link" href="explore.html#planets">Open the atlas <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 5l7 7-7 7" /></svg></a>
+          </article>
+
+          <article class="feature-tile features__tile--archive reveal">
+            <span class="feature-tile__icon" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
+            </span>
+            <h3 class="feature-tile__title">Launch archive</h3>
+            <p class="feature-tile__text">Every milestone since Sputnik 1 in 1957, laid out on one timeline.</p>
+            <a class="feature-tile__link" href="explore.html#timeline">Browse the timeline <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 5l7 7-7 7" /></svg></a>
+          </article>
+
+          <article class="feature-tile features__tile--compare reveal">
+            <span class="feature-tile__icon" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" focusable="false"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" /></svg>
+            </span>
+            <h3 class="feature-tile__title">Mission comparison</h3>
+            <p class="feature-tile__text">Line up launch years, spacecraft mass and years in service side by side.</p>
+            <ul class="mini-bars" aria-label="Years in service">
+              <li>Voyager 1 <span class="mini-bars__track"><span style="--value: 49"></span></span> 49 yrs</li>
+              <li>Hubble <span class="mini-bars__track"><span style="--value: 36"></span></span> 36 yrs</li>
+              <li>New Horizons <span class="mini-bars__track"><span style="--value: 20"></span></span> 20 yrs</li>
+            </ul>
+            <a class="feature-tile__link" href="explore.html#compare">Compare missions <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 5l7 7-7 7" /></svg></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== Newsletter CTA ===================== -->
+    <section class="section" id="newsletter" aria-labelledby="newsletter-title">
+      <div class="container">
+        <div class="cta-panel reveal">
+          <span class="cta-panel__rings" aria-hidden="true"></span>
+          <p class="eyebrow">Stay in orbit</p>
+          <h2 id="newsletter-title">Get launch alerts in your inbox</h2>
+          <p class="lead">One short briefing every Friday: upcoming launches, mission milestones and the best new images from deep space.</p>
+          <form class="newsletter-form" action="#newsletter" method="get">
+            <label class="newsletter-form__label" for="newsletter-email">Email address</label>
+            <input class="newsletter-form__input" id="newsletter-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+            <button class="btn btn--primary" type="submit">
+              Subscribe
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 5l7 7-7 7" /></svg>
+            </button>
+          </form>
+          <p class="form-hint">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>
+            No spam. Unsubscribe anytime.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== Footer (shared) ===================== -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__top">
+        <div class="site-footer__brand">
+          <a class="brand" href="index.html" aria-label="Orbit home">
+            <svg class="brand__logo" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+              <circle class="brand__planet" cx="20" cy="20" r="8" />
+              <g class="brand__orbit">
+                <ellipse cx="20" cy="20" rx="18" ry="7" transform="rotate(-24 20 20)" />
+              </g>
+              <circle class="brand__moon" cx="35.5" cy="13" r="2.4" />
+            </svg>
+            <span>ORBIT</span>
+          </a>
+          <p>A student-built mission tracker celebrating the people and machines exploring our solar system and beyond.</p>
+          <ul class="social">
+            <li><a class="social__link" href="#newsletter" aria-label="Email newsletter"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg></a></li>
+            <li><a class="social__link" href="explore.html#timeline" aria-label="Launch history feed"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16" /><circle cx="5" cy="19" r="1" /></svg></a></li>
+            <li><a class="social__link" href="explore.html" aria-label="Explore the solar system"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></a></li>
+          </ul>
+        </div>
+
+        <nav class="site-footer__nav" aria-label="Footer">
+          <div>
+            <h2 class="site-footer__heading">Orbit</h2>
+            <ul class="site-footer__list">
+              <li><a class="site-footer__link" href="index.html">Home</a></li>
+              <li><a class="site-footer__link" href="index.html#missions">Featured missions</a></li>
+              <li><a class="site-footer__link" href="index.html#newsletter">Launch alerts</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2 class="site-footer__heading">Explore</h2>
+            <ul class="site-footer__list">
+              <li><a class="site-footer__link" href="explore.html#planets">Planet gallery</a></li>
+              <li><a class="site-footer__link" href="explore.html#timeline">Launch timeline</a></li>
+              <li><a class="site-footer__link" href="explore.html#compare">Compare missions</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2 class="site-footer__heading">Resources</h2>
+            <ul class="site-footer__list">
+              <li><a class="site-footer__link" href="https://science.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA Science</a></li>
+              <li><a class="site-footer__link" href="https://www.esa.int/" target="_blank" rel="noopener noreferrer">ESA</a></li>
+              <li><a class="site-footer__link" href="https://www.jpl.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA JPL</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <div class="site-footer__bottom">
+        <p>© 2026 Orbit. A student web design project, not affiliated with NASA or ESA.</p>
+        <a class="site-footer__top-link" href="#main">
+          Back to top
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

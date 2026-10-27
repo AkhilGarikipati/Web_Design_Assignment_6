@@ -1,0 +1,21 @@
+{
+  "name": "orbit-space-tracker",
+  "version": "1.0.0",
+  "description": "Orbit - a two-page space exploration and mission tracker built with HTML, CSS Grid, Flexbox and SASS/SCSS.",
+  "private": true,
+  "scripts": {
+    "build": "sass scss/main.scss css/main.css --style=expanded",
+    "watch": "sass --watch scss/main.scss:css/main.css"
+  },
+  "keywords": [
+    "sass",
+    "scss",
+    "css-grid",
+    "flexbox",
+    "space"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "sass": "^1.106.1"
+  }
+}

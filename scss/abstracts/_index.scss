@@ -1,0 +1,9 @@
+// ==========================================================================
+// abstracts/_index.scss
+// FEATURE: @forward: one entry point for the abstracts folder, so other
+//          modules only write `@use '../abstracts' as *;`.
+// ==========================================================================
+@forward 'variables';
+@forward 'functions';
+@forward 'mixins';
+@forward 'placeholders';

@@ -1,0 +1,219 @@
+// ==========================================================================
+// components/_button.scss
+// Buttons, icon buttons, theme toggle and the mobile nav toggle.
+// ==========================================================================
+@use 'sass:map';
+@use '../abstracts' as *;
+
+.btn {
+  --btn-bg: var(--surface);
+  --btn-color: var(--heading);
+  --btn-border: var(--border-strong);
+  --btn-glow: var(--glow);
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: spacing(1);
+  min-height: rem(48px);
+  padding: spacing(1.5) spacing(3);
+  border: 1px solid var(--btn-border);
+  border-radius: radius(pill);
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  font-family: var(--font-heading);
+  font-size: rem(15px);
+  font-weight: weight(semibold);
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform $duration-fast $ease-out,
+    box-shadow $duration-base $ease-out,
+    background-color $duration-fast ease,
+    border-color $duration-fast ease;
+
+  // Light sweep across the button on hover.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform $duration-slow $ease-out;
+  }
+
+  .icon {
+    transition: transform $duration-fast $ease-out;
+  }
+
+  &:hover {
+    color: var(--btn-color);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -12px var(--btn-glow);
+
+    &::after {
+      transform: translateX(120%);
+    }
+
+    .icon {
+      transform: translateX(3px);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @include focus-ring;
+
+  &--sm {
+    min-height: rem(40px);
+    padding: spacing(1) spacing(2);
+    font-size: rem(14px);
+  }
+
+  &--lg {
+    min-height: rem(56px);
+    padding: spacing(2) spacing(4);
+    font-size: rem(16px);
+  }
+}
+
+// FEATURE: Map + @each + interpolation: one modifier class per variant.
+$button-variants: (
+  primary: (
+    bg: linear-gradient(135deg, var(--accent), var(--accent-2)),
+    color: var(--on-accent),
+    border: transparent,
+    glow: var(--glow),
+  ),
+  ghost: (
+    bg: transparent,
+    color: var(--heading),
+    border: var(--border-strong),
+    glow: var(--glow-2),
+  ),
+);
+
+@each $name, $variant in $button-variants {
+  .btn--#{$name} {
+    --btn-bg: #{map.get($variant, bg)};
+    --btn-color: #{map.get($variant, color)};
+    --btn-border: #{map.get($variant, border)};
+    --btn-glow: #{map.get($variant, glow)};
+  }
+}
+
+.btn--ghost:hover {
+  --btn-bg: var(--surface);
+}
+
+// ---- Icon buttons -------------------------------------------------------------
+.icon-btn {
+  width: rem(44px);
+  height: rem(44px);
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: var(--heading);
+  @include flex-center;
+  @include glass-effect($blur: null);
+  transition:
+    color $duration-fast ease,
+    box-shadow $duration-base ease,
+    transform $duration-fast $ease-out;
+
+  .icon {
+    width: rem(20px);
+    height: rem(20px);
+  }
+
+  &:hover {
+    @extend %glow;
+    color: var(--accent);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+
+  @include focus-ring;
+}
+
+// Sun shows in dark mode (switch to light), moon in light mode.
+.theme-toggle {
+  &__moon {
+    display: none;
+  }
+
+  .icon {
+    transition: transform $duration-slow $ease-out;
+  }
+
+  &:hover .icon {
+    transform: rotate(40deg);
+  }
+}
+
+[data-theme='light'] .theme-toggle {
+  &__sun {
+    display: none;
+  }
+
+  &__moon {
+    display: block;
+  }
+}
+
+// Hamburger that morphs into an X while the menu is open.
+.nav-toggle {
+  @include breakpoint(lg) {
+    display: none;
+  }
+
+  &__bars {
+    position: relative;
+    width: rem(18px);
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: background-color $duration-fast ease;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: currentColor;
+      transition: transform $duration-base $ease-out;
+    }
+
+    &::before {
+      transform: translateY(-6px);
+    }
+
+    &::after {
+      transform: translateY(6px);
+    }
+  }
+
+  &[aria-expanded='true'] &__bars {
+    background: transparent;
+
+    &::before {
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      transform: rotate(-45deg);
+    }
+  }
+}

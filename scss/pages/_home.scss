@@ -1,0 +1,162 @@
+// ==========================================================================
+// pages/_home.scss
+// Home page sections: missions grid, mission-control bento, newsletter CTA.
+// ==========================================================================
+@use '../abstracts' as *;
+
+// ---- CSS GRID LAYOUT #1: featured missions ---------------------------------
+// 1 column → 2 columns (md) → 3 columns (lg); the featured card spans 2.
+.missions__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: spacing(3);
+
+  @include breakpoint(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    > .mission-card--featured {
+      grid-column: span 2;
+    }
+  }
+
+  @include breakpoint(lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+// ---- CSS GRID LAYOUT #2 (template areas): mission-control bento ------------
+$feature-areas: (live, atlas, archive, compare);
+
+.features {
+  &__grid {
+    display: grid;
+    grid-template-areas:
+      'live'
+      'atlas'
+      'archive'
+      'compare';
+    gap: spacing(3);
+
+    @include breakpoint(md) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas:
+        'live    live'
+        'atlas   archive'
+        'compare compare';
+    }
+
+    @include breakpoint(lg) {
+      grid-template-columns: 1.35fr 1fr 1fr;
+      grid-template-areas:
+        'live atlas   archive'
+        'live compare compare';
+    }
+  }
+
+  // FEATURE: @each over a list + interpolation → .features__tile--live …
+  @each $area in $feature-areas {
+    &__tile--#{$area} {
+      grid-area: $area;
+    }
+  }
+}
+
+// Row of small planets inside the atlas tile.
+.mini-planets {
+  display: flex;
+  align-items: center;
+  gap: spacing(1.5);
+  padding-block: spacing(1);
+
+  .planet {
+    --size: #{rem(34px)};
+    --ring-size: 170%;
+
+    &:nth-child(2) {
+      --size: #{rem(46px)};
+      animation-delay: -2s;
+    }
+
+    &:nth-child(3) {
+      --size: #{rem(28px)};
+      animation-delay: -4s;
+    }
+  }
+}
+
+// Mini bar chart inside the compare tile.
+.mini-bars {
+  @extend %list-reset;
+  display: flex;
+  flex-direction: column;
+  gap: spacing(1.25);
+  margin-top: spacing(1);
+
+  li {
+    display: grid;
+    grid-template-columns: rem(110px) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: spacing(1.5);
+    font-size: rem(13px);
+    color: var(--text-muted);
+  }
+
+  &__track {
+    height: rem(6px);
+    border-radius: radius(pill);
+    background: var(--surface-strong);
+    overflow: hidden;
+
+    span {
+      display: block;
+      height: 100%;
+      width: calc(var(--value) / 50 * 100%);
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+  }
+}
+
+// ---- Newsletter CTA -------------------------------------------------------------
+.cta-panel {
+  @extend %card-base;
+  @extend %gradient-border;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: spacing(3);
+  padding: spacing(7) spacing(3);
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 0%, var(--nebula-1), transparent 65%),
+    radial-gradient(ellipse at 50% 100%, var(--nebula-2), transparent 65%),
+    var(--surface);
+
+  @include breakpoint(md) {
+    padding: spacing(10) spacing(8);
+  }
+
+  .lead {
+    margin-inline: auto;
+  }
+
+  // Decorative concentric rings behind the content.
+  &__rings {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: -1;
+    width: rem(900px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    translate: -50% -50%;
+    background: repeating-radial-gradient(
+      circle,
+      transparent 0 rem(70px),
+      var(--border) rem(70px) rem(71px)
+    );
+    -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 65%);
+    mask-image: radial-gradient(circle, #000 20%, transparent 65%);
+    pointer-events: none;
+  }
+}

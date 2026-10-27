@@ -1,0 +1,113 @@
+// ==========================================================================
+// abstracts/_functions.scss
+// FEATURE: Functions: @function / @return for calculations and colors.
+// FEATURE: Built-in modules: sass:math, sass:color, sass:map, sass:list,
+//          sass:meta (math.div, color.mix, color.adjust, map.get ...).
+// FEATURE: @error: guards that fail the build with a clear message.
+// ==========================================================================
+@use 'sass:math';
+@use 'sass:color';
+@use 'sass:map';
+@use 'sass:list';
+@use 'sass:meta';
+@use 'variables' as *;
+
+// Round a number to $places decimals (keeps the unit).
+@function round-to($number, $places: 3) {
+  $factor: math.pow(10, $places);
+  @return math.div(math.round($number * $factor), $factor);
+}
+
+// FEATURE: Functions: px → rem converter. Uses math.div instead of "/".
+// rem(24px) → 1.5rem, rem(24) → 1.5rem
+@function rem($value, $base: $base-font-size) {
+  @if meta.type-of($value) != 'number' {
+    @error 'rem() expects a number, received `#{$value}`.';
+  }
+  @if math.unit($value) == 'rem' {
+    @return $value;
+  }
+  @if math.is-unitless($value) {
+    $value: $value * 1px;
+  }
+  @return round-to(math.div($value, $base), 4) * 1rem;
+}
+
+// FEATURE: Functions: spacing scale built on $spacing-unit.
+// spacing(2) → 1rem, spacing(0.5) → 0.25rem
+@function spacing($multiplier) {
+  @return rem($multiplier * $spacing-unit);
+}
+
+// Round RGB channels so mixed colors print as clean hex.
+// (Module-private: the leading dash keeps it out of @forward.)
+@function -round-channels($color) {
+  @return rgb(
+    math.round(color.channel($color, 'red', $space: rgb)),
+    math.round(color.channel($color, 'green', $space: rgb)),
+    math.round(color.channel($color, 'blue', $space: rgb)),
+    color.channel($color, 'alpha')
+  );
+}
+
+// FEATURE: Functions + sass:color: tint / shade helpers.
+@function tint($color, $percent) {
+  @return -round-channels(color.mix(#fff, $color, $percent));
+}
+
+@function shade($color, $percent) {
+  @return -round-channels(color.mix(#000, $color, $percent));
+}
+
+// Transparent version of a color: alpha(#fff, 0.1) → rgba(255,255,255,.1)
+@function alpha($color, $opacity) {
+  @return color.change($color, $alpha: $opacity);
+}
+
+// Brighter version for glows. color.adjust shifts the hue slightly;
+// color.scale lightens proportionally so the result stays in gamut.
+@function glow-tone($color, $lightness: 25%, $hue-shift: 0deg) {
+  $shifted: color.adjust($color, $hue: $hue-shift);
+  @return -round-channels(color.scale($shifted, $lightness: $lightness));
+}
+
+// Map lookups with helpful errors.
+@function z($layer) {
+  @if not map.has-key($z-layers, $layer) {
+    @error 'Unknown z-layer `#{$layer}`. Expected one of: #{map.keys($z-layers)}.';
+  }
+  @return map.get($z-layers, $layer);
+}
+
+@function radius($size) {
+  @if not map.has-key($radii, $size) {
+    @error 'Unknown radius `#{$size}`. Expected one of: #{map.keys($radii)}.';
+  }
+  @return rem(map.get($radii, $size));
+}
+
+@function weight($name) {
+  @return map.get($font-weights, $name);
+}
+
+// FEATURE: Functions: fluid type with clamp(), computed from min/max sizes.
+// fluid(16px, 20px) → clamp(1rem, 0.9rem + 0.435vw, 1.25rem)
+@function fluid($min, $max, $min-vw: 360px, $max-vw: 1280px) {
+  $slope: math.div($max - $min, $max-vw - $min-vw);
+  $base: rem($min - $slope * $min-vw);
+  $vw: round-to($slope * 100) * 1vw;
+  $min-rem: rem($min);
+  $max-rem: rem($max);
+  @return clamp($min-rem, $base + $vw, $max-rem);
+}
+
+// FEATURE: @for loop + sass:list + math.random: builds a box-shadow
+// list of $count star positions inside an $area × $area square.
+@function star-field($count, $area: 2000) {
+  $shadows: ();
+  @for $i from 1 through $count {
+    $star: (math.random($area) * 1px) (math.random($area) * 1px);
+    $shadows: list.append($shadows, $star, $separator: comma);
+  }
+  @return $shadows;
+}

@@ -1,0 +1,106 @@
+// ==========================================================================
+// base/_reset.scss
+// Modern reset, page background and global accessibility defaults.
+// ==========================================================================
+@use '../abstracts' as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-height) + #{spacing(2)});
+
+  @include motion-ok {
+    scroll-behavior: smooth;
+  }
+}
+
+// FEATURE: Nesting: element defaults grouped under body.
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: var(--font-body);
+  font-size: rem(16px);
+  line-height: $line-height-base;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(1200px 800px at 85% -10%, var(--nebula-1), transparent 60%),
+    radial-gradient(900px 700px at -10% 35%, var(--nebula-2), transparent 60%),
+    radial-gradient(800px 600px at 50% 110%, var(--nebula-3), transparent 60%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color $duration-base ease,
+    color $duration-base ease;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+// Shared stroke-icon style for the inline SVG icons.
+.icon {
+  width: 1.25em;
+  height: 1.25em;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+// Respect users who ask for less motion.
+@include reduced-motion {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

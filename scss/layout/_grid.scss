@@ -1,0 +1,66 @@
+// ==========================================================================
+// layout/_grid.scss
+// Page shell (Flexbox), containers and section headings.
+// ==========================================================================
+@use '../abstracts' as *;
+
+// FLEXBOX LAYOUT: a column page shell keeps the footer at the bottom.
+// (Flex, not grid: a sticky header inside a grid row would not stick.)
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+.container {
+  @include container;
+
+  &--narrow {
+    max-width: rem(860px);
+  }
+}
+
+.section {
+  position: relative;
+  padding-block: spacing(10);
+
+  @include breakpoint(lg) {
+    padding-block: spacing(12);
+  }
+
+  &--tight {
+    padding-block: spacing(6);
+  }
+}
+
+// FEATURE: Nesting with the parent selector (&) for BEM modifiers.
+.section-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: spacing(1.5);
+  margin-bottom: spacing(6);
+
+  &--center {
+    align-items: center;
+    text-align: center;
+  }
+
+  &--split {
+    @include breakpoint(md) {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: spacing(4);
+    }
+  }
+
+  &__copy {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(1.5);
+  }
+}

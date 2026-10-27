@@ -1,0 +1,74 @@
+// ==========================================================================
+// components/_form.scss
+// FLEXBOX LAYOUT: newsletter form, stacked on mobile and a single pill row
+// from sm up.
+// ==========================================================================
+@use '../abstracts' as *;
+
+.newsletter-form {
+  display: flex;
+  flex-direction: column;
+  gap: spacing(1.5);
+  width: 100%;
+  max-width: rem(540px);
+
+  @include breakpoint(sm) {
+    flex-direction: row;
+    gap: spacing(1);
+    padding: rem(6px);
+    border-radius: radius(pill);
+    @include glass-effect($strength: strong);
+  }
+
+  &__label {
+    @extend %visually-hidden;
+  }
+
+  &__input {
+    flex: 1;
+    min-width: 0;
+    min-height: rem(52px);
+    padding: 0 spacing(2.5);
+    border: 1px solid var(--border-strong);
+    border-radius: radius(pill);
+    background: var(--surface);
+    color: var(--heading);
+    transition:
+      border-color $duration-fast ease,
+      box-shadow $duration-fast ease;
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+
+    &:user-invalid {
+      border-color: var(--accent-3);
+    }
+
+    @include breakpoint(sm) {
+      border-color: transparent;
+      background: transparent;
+    }
+  }
+
+  .btn {
+    min-height: rem(52px);
+  }
+}
+
+.form-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: spacing(1);
+  font-size: rem(13px);
+  color: var(--text-muted);
+}

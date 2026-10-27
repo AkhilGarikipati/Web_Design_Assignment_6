@@ -1,0 +1,34 @@
+// ==========================================================================
+// main.scss: the single entry point compiled to css/main.css
+//
+// FEATURE: @use module system. Every partial is loaded once and gets its
+// own namespace. Nothing here uses the deprecated @import.
+// Order: abstracts (no CSS of their own) → base → layout → components → pages.
+// ==========================================================================
+
+// Abstracts: variables, functions, mixins, placeholders (via @forward)
+@use 'abstracts';
+
+// Base: theme tokens, reset, type, keyframes
+@use 'base/themes';
+@use 'base/reset';
+@use 'base/typography';
+@use 'base/animations';
+
+// Layout: page shell, header, hero, footer
+@use 'layout/grid';
+@use 'layout/header';
+@use 'layout/hero';
+@use 'layout/footer';
+
+// Components
+@use 'components/button';
+@use 'components/card';
+@use 'components/stats';
+@use 'components/planet';
+@use 'components/timeline';
+@use 'components/form';
+
+// Pages
+@use 'pages/home';
+@use 'pages/explore';

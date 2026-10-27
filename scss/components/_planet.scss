@@ -1,0 +1,141 @@
+// ==========================================================================
+// components/_planet.scss
+// CSS-only planets: gradient orb + rotating texture layer + optional ring.
+// ==========================================================================
+@use 'sass:map';
+@use '../abstracts' as *;
+
+$planet-sizes: (
+  sm: 72px,
+  md: 120px,
+  lg: 200px,
+  xl: 320px,
+);
+
+.planet {
+  --size: #{rem(map.get($planet-sizes, md))};
+  --ring-tilt: -18deg;
+  --ring-size: 190%;
+
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--size);
+  height: var(--size);
+
+  @include motion-ok {
+    animation: float 8s ease-in-out infinite;
+  }
+
+  &__orb {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 32% 28%,
+      var(--planet-light) 0%,
+      var(--planet-base) 38%,
+      var(--planet-dark) 100%
+    );
+    box-shadow:
+      0 0 calc(var(--size) * 0.35) calc(var(--size) * -0.04) var(--planet-glow),
+      inset calc(var(--size) * -0.08) calc(var(--size) * -0.06) calc(var(--size) * 0.2) rgba(0, 0, 0, 0.5);
+
+    // Surface texture: twice as wide as the orb, slides left = rotation.
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 200%;
+      background-size: 50% 100%;
+      background-repeat: repeat-x;
+      animation: planet-spin var(--spin, 36s) linear infinite;
+    }
+
+    // Highlight + terminator shading on top for a 3D look.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.35), transparent 35%),
+        radial-gradient(circle at 70% 75%, transparent 30%, rgba(0, 0, 0, 0.55) 78%);
+    }
+  }
+
+  // The back half sits behind the orb, the clipped front half in front.
+  &__ring {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: var(--ring-size);
+      height: 46%;
+      border: calc(var(--size) * 0.045) solid var(--planet-ring);
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 calc(var(--size) * 0.02) var(--planet-ring-inner);
+      transform: translate(-50%, -50%) rotate(var(--ring-tilt));
+    }
+
+    &::before {
+      z-index: 0;
+    }
+
+    &::after {
+      z-index: 2;
+      clip-path: inset(50% 0 0 0);
+    }
+  }
+}
+
+// FEATURE: @each + @if/@else + interpolation: size modifiers.
+@each $name, $size in $planet-sizes {
+  .planet--#{$name} {
+    @if $name == xl {
+      --size: clamp(#{rem(200px)}, 58vw, #{rem($size)});
+    } @else {
+      --size: #{rem($size)};
+    }
+  }
+}
+
+// FEATURE: @each over a nested map + interpolated selectors: one theme class
+// per planet (.planet-mercury … .planet-neptune). It goes on the planet or a
+// parent tile, so child elements inherit the colors.
+@each $name, $data in $planets {
+  $base: map.get($data, base);
+  $shade: map.get($data, shade);
+
+  .planet-#{$name} {
+    --planet-base: #{$base};
+    --planet-light: #{tint($base, 45%)};
+    --planet-dark: #{shade($shade, 30%)};
+    --planet-glow: #{alpha($base, 0.45)};
+
+    @if map.get($data, ring) {
+      --planet-ring: #{alpha(tint($base, 25%), 0.75)};
+      --planet-ring-inner: #{alpha($shade, 0.6)};
+      --ring-tilt: #{map.get($data, tilt)};
+    }
+
+    @if map.has-key($data, ring-size) {
+      --ring-size: #{map.get($data, ring-size)};
+    }
+
+    .planet__orb::before {
+      @include planet-texture(map.get($data, texture), $shade);
+    }
+  }
+}
